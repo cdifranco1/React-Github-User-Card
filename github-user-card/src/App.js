@@ -1,12 +1,15 @@
 import React from 'react';
 import axios from 'axios';
-import UserList from './components/UserList'
+import { Container, Row, Col } from 'reactstrap';
+import UserList from './components/UserList';
+import UserCard from './components/UserCard';
 
 class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      users: []
+      mainUser: {},
+      followers: []
     }
   }
 
@@ -16,14 +19,20 @@ class App extends React.Component {
       axios.get(`https://api.github.com/users/cdifranco1/followers`)
     ])
     .then(axios.spread((mainUser, remainingUsers) => {
-      this.setState({users: [mainUser.data, ...remainingUsers.data]})
+      this.setState({
+        mainUser: mainUser.data,
+        followers: remainingUsers.data
+      })
     }))
   }
 
   render(){
     console.log(this.state)
     return (
-      <UserList users={this.state.users} />
+      <Container>
+        <UserCard user={this.state.mainUser} />
+        <UserList users={this.state.followers} />
+      </Container>
     )
   }
 }
